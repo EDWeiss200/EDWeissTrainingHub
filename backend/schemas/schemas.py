@@ -1,5 +1,6 @@
 from pydantic import BaseModel,EmailStr
 from enum import Enum
+from typing import Optional
 
 class Item(BaseModel):
     name:str
@@ -72,7 +73,6 @@ class ExerciseSchema(BaseModel):
         from_attributes = True
 
 class ExerciseSchemaAdd(BaseModel):
-    author_id : int
     name : str
     muscle_group : Muscle_Group
     number_of_repetitions : int
@@ -96,12 +96,11 @@ class WorkoutSchema(BaseModel):
         from_attributes = True
     
 class WorkoutSchemaAdd(BaseModel):
-    author_id : int
     name : str
     break_between_exercises : int
     direction : Direction
     exercise_1id : int
-    exercise_2id : int
-    exercise_3id : int
-    exercise_4id : int
-    exercise_5id : int
+    exercise_2id: Optional[int] | None
+    exercise_3id: Optional[int] | None
+    exercise_4id: Optional[int] | None
+    exercise_5id: Optional[int] | None

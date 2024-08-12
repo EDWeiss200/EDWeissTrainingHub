@@ -3,13 +3,12 @@ from fastapi_users import FastAPIUsers
 from typing import Annotated
 from databse import get_async_session,AsyncGenerator
 import uvicorn
-from auth.manager import get_user_manager
-from auth.auth import auth_backend
-from auth.database import User
+from auth.auth import auth_backend,fastapi_users
 from auth.schemas import UserCreate,UserRead
 from api.exercise_router import router as exercise_router
 from api.user_router import router as user_router
 from api.workout_router import router as workout_router
+
 
 app = FastAPI()
 
@@ -18,10 +17,7 @@ app = FastAPI()
 async def home(db = Depends(get_async_session)):
     return "Hello World"
 
-fastapi_users = FastAPIUsers[User, int](
-    get_user_manager,
-    [auth_backend],
-)
+
 
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
