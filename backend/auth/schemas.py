@@ -2,17 +2,17 @@ import uuid
 from pydantic import EmailStr
 from typing import Optional
 from fastapi_users import schemas
-
+from schemas.schemas import Gender,GymStatus,Direction
 
 class UserRead(schemas.BaseUser[int]):
     id: int 
     email: EmailStr
     username : str
-    gender : str
+    gender : Gender
     weight : int 
     height : int
-    direction : str
-    gym_status : str
+    direction : Direction
+    gym_status : GymStatus
     is_active: bool = True
     is_superuser: bool = False
     is_verified: bool = False

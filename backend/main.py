@@ -3,11 +3,14 @@ from fastapi_users import FastAPIUsers
 from typing import Annotated
 from databse import get_async_session,AsyncGenerator
 import uvicorn
-
 from auth.manager import get_user_manager
 from auth.auth import auth_backend
 from auth.database import User
 from auth.schemas import UserCreate,UserRead
+from api.exercise_router import router as exercise_router
+from api.user_router import router as user_router
+from api.workout_router import router as workout_router
+
 app = FastAPI()
 
 #Эндпоинт
@@ -31,6 +34,15 @@ app.include_router(
     prefix="/auth",
     tags=["auth"],
 )
+
+app.include_router(user_router)
+app.include_router(workout_router)
+app.include_router(exercise_router)
+
 uvicorn.run(app)
+
+
+
+
 
 

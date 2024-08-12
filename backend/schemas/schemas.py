@@ -5,7 +5,7 @@ class Item(BaseModel):
     name:str
 
 
-class GymStatus(Enum):
+class GymStatus(str,Enum):
     beginner = "beginner"
     dystrophic = "dystrophic"
     amateur = "amateur"
@@ -14,7 +14,7 @@ class GymStatus(Enum):
     Gigachad = "Gigachad"
     UltraGigachad = "UltraGigachad"
 
-class Direction(Enum):
+class Direction(str,Enum):
     workout = "workout"
     powerlifting = "powerlifting"
     crossfit = "crossfit"
@@ -22,18 +22,86 @@ class Direction(Enum):
     drochila = "drochila"
     Gigachad = "Gigachad"
 
+
+class Gender(str,Enum):
+    men = "men"
+    women = "women"
+
+
+class Muscle_Group(str,Enum):
+    Back_muscles = "Back muscles"
+    Pectoral_muscles = "Pectoral muscles"
+    Biceps = "Biceps"
+    Triceps = "Triceps"
+    Quadriceps = "Quadriceps"
+    Trapezoidal_muscles  = "Trapezoidal muscles"
+    Calf_muscles = "Calf muscles"
+    Forearms =  "Forearms"
+    Press = "Press"
+    The_widest_muscles = "The widest muscles"
+    Deltoid_muscles =  "Deltoid muscles"
+    Gluteal_muscles = "Gluteal muscles"
+
+
 class UserInfo(BaseModel):
     id : int
     username : str
     email : EmailStr
-    gender : str
+    gender : Gender
     weight : int
     height : int 
     direction : Direction
     gym_status : GymStatus
     days_of_training : int 
-    hashed_password: str
-    is_active: bool
-    is_superuser: bool
-    is_verified: bool
 
+
+    class Config:
+        from_attributes = True
+
+class ExerciseSchema(BaseModel):
+    id : int
+    author_id : int
+    name : str
+    muscle_group : Muscle_Group
+    number_of_repetitions : int
+    number_of_approaches : int
+    break_between_approaches : int
+    workload : int
+
+    class Config:
+        from_attributes = True
+
+class ExerciseSchemaAdd(BaseModel):
+    author_id : int
+    name : str
+    muscle_group : Muscle_Group
+    number_of_repetitions : int
+    number_of_approaches : int
+    break_between_approaches : int
+    workload : int
+
+class WorkoutSchema(BaseModel):
+    id : int
+    author_id : int
+    name : str
+    break_between_exercises : int
+    direction : Direction
+    exercise_1id : int
+    exercise_2id : int
+    exercise_3id : int
+    exercise_4id : int
+    exercise_5id : int
+
+    class Config:
+        from_attributes = True
+    
+class WorkoutSchemaAdd(BaseModel):
+    author_id : int
+    name : str
+    break_between_exercises : int
+    direction : Direction
+    exercise_1id : int
+    exercise_2id : int
+    exercise_3id : int
+    exercise_4id : int
+    exercise_5id : int

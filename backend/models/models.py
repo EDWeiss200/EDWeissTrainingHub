@@ -1,17 +1,12 @@
-from sqlalchemy import MetaData,String,Integer,Column
+from sqlalchemy import MetaData,String,Integer,Column,ForeignKey
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import Boolean, ForeignKey, Integer, String, func, select,Column
 from sqlalchemy.orm import Mapped, declared_attr, mapped_column
-
+from schemas.schemas import UserInfo,ExerciseSchema,WorkoutSchema
 metadata = MetaData()
 
 class Base(DeclarativeBase):
     pass
-
-class Item(Base):
-    __tablename__ = 'item'
-    id = Column(Integer,index = True, primary_key=True)
-    name = Column(String)
 
 
 class User(Base):
@@ -36,4 +31,67 @@ class User(Base):
         Boolean, default=False, nullable=False
     )
 
-    
+    def to_read_model(self) -> UserInfo:
+        return UserInfo(
+            id = self.id,
+            username = self.username,
+            email = self.email,
+            gender = self.gender,
+            weight=self.weight,
+            height=self.height,
+            direction=self.direction,
+            gym_status=self.gym_status,
+            days_of_training=self.days_of_training
+        ) 
+
+
+
+class Exercise(Base):
+    __tablename__ = 'exercises'
+    id = Column(Integer,index = True,primary_key = True)
+    author_id = Column(Integer,ForeignKey("users.id"), nullable=False)
+    name = Column(String,nullable=False)
+    muscle_group = Column(String,nullable=False)
+    number_of_repetitions = Column(Integer,nullable=False)
+    number_of_approaches = Column(Integer,nullable=False)
+    break_between_approaches = Column(Integer,nullable=False)
+    workload = Column(Integer,nullable=False)
+
+    def to_read_model(self) -> ExerciseSchema:
+        return ExerciseSchema(
+            id = self.id,
+            author_id = self.author_id,
+            name = self.name,
+            muscle_group = self.muscle_group,
+            number_of_repetitions = self.number_of_repetitions,
+            break_between_approaches = self.break_between_approaches,
+            workload = self.workload
+        ) 
+
+
+class Workout(Base):
+    __tablename__ = "workout"
+    id = Column(Integer,index = True,primary_key = True)
+    author_id = Column(Integer,ForeignKey("users.id"), nullable=False)
+    name = Column(String, nullable=False)
+    break_between_exercises = Column(Integer,nullable=False)
+    direction = Column(String,nullable=False)
+    exercise_1id = Column(Integer,ForeignKey("exercises.id"), nullable=False)
+    exercise_2id = Column(Integer,ForeignKey("exercises.id"), nullable=True)
+    exercise_3id = Column(Integer,ForeignKey("exercises.id"), nullable=True)
+    exercise_4id = Column(Integer,ForeignKey("exercises.id"), nullable=True)
+    exercise_5id = Column(Integer,ForeignKey("exercises.id"), nullable=True)
+
+    def to_read_model(self) -> WorkoutSchema:
+        return WorkoutSchema(
+            id=self.id,
+            author_id=self.author_id,
+            name = self.name,
+            break_between_exercises=self.break_between_exercises,
+            direction=self.direction,
+            exercise_1id=self.exercise_1id,
+            exercise_2id=self.exercise_2id,
+            exercise_3id=self.exercise_3id,
+            exercise_4id=self.exercise_4id,
+            exercise_5id=self.exercise_5id
+        )

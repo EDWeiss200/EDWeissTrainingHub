@@ -2,7 +2,7 @@ import uuid
 from typing import Optional
 
 from fastapi import Depends, Request
-from fastapi_users import BaseUserManager, UUIDIDMixin,IntegerIDMixin,models,schemas
+from fastapi_users import BaseUserManager, UUIDIDMixin,IntegerIDMixin,models,schemas,exceptions
 from config import SECRET_USER_MANAGER
 from .database import User, get_user_db
 
