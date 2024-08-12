@@ -3,6 +3,8 @@ from typing import Annotated
 from repositories.exercise import ExerciseRepository
 from schemas.schemas import ExerciseSchemaAdd
 from repositories.exercise import ExerciseRepository
+from services.exercise import ExerciseService
+from .dependencies import exercise_service
 
 router = APIRouter(
     tags=["exercise"],
@@ -18,9 +20,8 @@ async def get_all_exercise(
 @router.post("/add")
 async def add_one_exercise(
     exercise : ExerciseSchemaAdd,
-
+    exercise_service : ExerciseService = Depends(exercise_service)
 ):
-    exercise_dict = exercise.model_dump()
-    exercise_id = await ExerciseRepository().add_one(exercise_dict)
+    exercise_id = await exercise_service.add_exercise(exercise)
     return {"exercise_id" : exercise_id}
     
