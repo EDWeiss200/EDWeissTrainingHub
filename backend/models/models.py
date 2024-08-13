@@ -64,6 +64,7 @@ class Exercise(Base):
             name = self.name,
             muscle_group = self.muscle_group,
             number_of_repetitions = self.number_of_repetitions,
+            number_of_approaches=self.number_of_approaches,
             break_between_approaches = self.break_between_approaches,
             workload = self.workload
         ) 

@@ -6,7 +6,7 @@ class Item(BaseModel):
     name:str
 
 
-class GymStatus(str,Enum):
+class GymStatus(str, Enum):
     beginner = "beginner"
     dystrophic = "dystrophic"
     amateur = "amateur"
@@ -15,7 +15,7 @@ class GymStatus(str,Enum):
     Gigachad = "Gigachad"
     UltraGigachad = "UltraGigachad"
 
-class Direction(str,Enum):
+class Direction(str, Enum):
     workout = "workout"
     powerlifting = "powerlifting"
     crossfit = "crossfit"
@@ -24,12 +24,12 @@ class Direction(str,Enum):
     Gigachad = "Gigachad"
 
 
-class Gender(str,Enum):
+class Gender(str, Enum):
     men = "men"
     women = "women"
 
 
-class Muscle_Group(str,Enum):
+class Muscle_Group(str, Enum):
     Back_muscles = "Back muscles"
     Pectoral_muscles = "Pectoral muscles"
     Biceps = "Biceps"
@@ -87,10 +87,10 @@ class WorkoutSchema(BaseModel):
     break_between_exercises : int
     direction : Direction
     exercise_1id : int
-    exercise_2id : int
-    exercise_3id : int
-    exercise_4id : int
-    exercise_5id : int
+    exercise_2id : Optional[int] | None
+    exercise_3id : Optional[int] | None
+    exercise_4id : Optional[int] | None
+    exercise_5id : Optional[int] | None
 
     class Config:
         from_attributes = True

@@ -1,6 +1,6 @@
 from abc import ABC,abstractmethod
 from databse import async_session_maker
-from sqlalchemy import insert,select
+from sqlalchemy import insert,select,delete
 
 
 class AbstractRepository(ABC):
@@ -11,6 +11,9 @@ class AbstractRepository(ABC):
     
     @abstractmethod
     async def find_all():
+        raise NotImplementedError
+    
+    async def delete_one():
         raise NotImplementedError
 
 
@@ -31,3 +34,10 @@ class SQLAlchemyRepository(AbstractRepository):
             res = await session.execute(stmt)
             res = [row[0].to_read_model() for row in res.all()]
             return res
+    
+    async def delete_one(self,id):
+        async with async_session_maker() as session:
+            stmt = delete(self.model).where(self.model.id == id)
+            await session.execute(stmt)
+            await session.commit()
+            return id

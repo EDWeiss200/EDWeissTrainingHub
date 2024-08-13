@@ -19,17 +19,18 @@ class UserRead(schemas.BaseUser[int]):
 
 
     class Config:
-        orm_mode = True
+        from_attributes = True
+
 
 
 class UserCreate(schemas.BaseUserCreate):
     email: EmailStr
     password: str
     username : str
-    gender : str
+    gender : Gender
     weight : int 
     height : int
-    direction : str
+    direction : Direction
     is_active: Optional[bool] = True
     is_superuser: Optional[bool] = False
     is_verified: Optional[bool] = False

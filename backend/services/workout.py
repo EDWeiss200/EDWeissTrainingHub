@@ -13,3 +13,11 @@ class WorkoutService:
                 workout_dict[i] = None
         workout_id = await self.workout_repo.add_one(workout_dict)
         return workout_id
+    
+    async def delete_workout(self,workout_id):
+        workout_delete_id = await self.workout_repo.delete_one(workout_id)
+        return workout_delete_id
+    
+    async def find_all(self):
+        workout_all = await self.workout_repo.find_all()
+        return workout_all

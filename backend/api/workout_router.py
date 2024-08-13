@@ -10,11 +10,7 @@ router = APIRouter(
     prefix="/workout"
 )
 
-@router.get("/all")
-async def get_all_workout(
 
-):
-    pass
 
 @router.post("/add")
 async def add_one_workout(
@@ -24,3 +20,21 @@ async def add_one_workout(
 ):
     workout_id = await workout_service.add_workout(workout,user.id)
     return {"workout_id" : workout_id}
+
+@router.delete("/del")
+async def delete_one(
+    id: int,
+    workout_service: WorkoutService = Depends(workout_service),
+    user:User = Depends(current_user)
+):
+    workout_id = await workout_service.delete_workout(id)
+    return{"delete_workout" : workout_id}
+
+
+@router.get("/all")
+async def find_all(
+    workout_service: WorkoutService = Depends(workout_service),
+    user:User = Depends(current_user)
+):
+    workoyt_all = await workout_service.find_all()
+    return workoyt_all

@@ -10,3 +10,11 @@ class ExerciseService:
         exercise_dict['author_id'] = user_id
         exercise_id = await self.exercise_repo.add_one(exercise_dict)
         return exercise_id
+    
+    async def delete_exercise(self,exercise_id):
+        exercise_delete_id = await self.exercise_repo.delete_one(exercise_id)
+        return exercise_delete_id
+    
+    async def find_all(self):
+        exercise_all = await self.exercise_repo.find_all()
+        return exercise_all
