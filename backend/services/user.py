@@ -14,3 +14,13 @@ class UserSercvice:
     async def find_all(self):
         user_all = await self.user_repo.find_all()
         return user_all
+    
+    async def filter_by_direction(self,direction):
+        filters = [self.user_repo.model.direction == direction]
+        user_res = await self.user_repo.filter(filters)
+        return user_res
+
+    async def filter_by_gym_status(self,gym_status):
+        filters = [self.user_repo.model.gym_status == gym_status]
+        user_res = await self.user_repo.filter(filters)
+        return user_res

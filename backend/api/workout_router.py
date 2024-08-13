@@ -1,6 +1,6 @@
 from fastapi import APIRouter,Depends
 from services.workout import WorkoutService
-from schemas.schemas import WorkoutSchemaAdd
+from schemas.schemas import WorkoutSchemaAdd,Direction
 from .dependencies import workout_service
 from auth.auth import current_user
 from models.models import User
@@ -38,3 +38,12 @@ async def find_all(
 ):
     workoyt_all = await workout_service.find_all()
     return workoyt_all
+
+@router.get("/filter/direction")
+async def find_by_direction(
+    direction: Direction,
+    workout_service: WorkoutService = Depends(workout_service),
+    user: User = Depends(current_user)
+):
+    workout_find = await workout_service.filter_by_direction(direction)
+    return workout_find

@@ -5,7 +5,7 @@ from .database import User
 from fastapi_users.authentication import JWTStrategy
 from config import SECRET_AUTH
 import fastapi_users
-cookie_transport = CookieTransport(cookie_name="gym_cookie",cookie_max_age=3600)
+cookie_transport = CookieTransport(cookie_name="gym_cookie",cookie_max_age=7200)
 
 
 

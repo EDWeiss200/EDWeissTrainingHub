@@ -18,3 +18,8 @@ class ExerciseService:
     async def find_all(self):
         exercise_all = await self.exercise_repo.find_all()
         return exercise_all
+    
+    async def filter_by_muscle_group(self,group):
+        filters = [self.exercise_repo.model.muscle_group == group]
+        exercise_res = await self.exercise_repo.filter(filters)
+        return exercise_res

@@ -15,6 +15,9 @@ class AbstractRepository(ABC):
     
     async def delete_one():
         raise NotImplementedError
+    
+    async def filter():
+        raise NotImplementedError
 
 
 class SQLAlchemyRepository(AbstractRepository):
@@ -41,3 +44,10 @@ class SQLAlchemyRepository(AbstractRepository):
             await session.execute(stmt)
             await session.commit()
             return id
+
+    async def filter(self,filters: list):
+        async with async_session_maker() as session:
+            stmt = select(self.model).filter(*filters)
+            res = await session.execute(stmt)
+            res = [row[0].to_read_model() for row in res.all()]
+            return res

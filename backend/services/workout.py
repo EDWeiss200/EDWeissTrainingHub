@@ -1,6 +1,7 @@
 from utils.repository import AbstractRepository
 from schemas.schemas import WorkoutSchemaAdd,WorkoutSchema
 
+
 class WorkoutService:
     def __init__(self,workout_repo: AbstractRepository):
         self.workout_repo: AbstractRepository = workout_repo()
@@ -21,3 +22,8 @@ class WorkoutService:
     async def find_all(self):
         workout_all = await self.workout_repo.find_all()
         return workout_all
+    
+    async def filter_by_direction(self,direction):
+        filters = [self.workout_repo.model.direction == direction]
+        workout_res = await self.workout_repo.filter(filters)
+        return workout_res

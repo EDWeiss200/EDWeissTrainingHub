@@ -1,7 +1,7 @@
 from fastapi import APIRouter,Depends
 from typing import Annotated
 from repositories.exercise import ExerciseRepository
-from schemas.schemas import ExerciseSchemaAdd
+from schemas.schemas import ExerciseSchemaAdd,Muscle_Group
 from repositories.exercise import ExerciseRepository
 from services.exercise import ExerciseService
 from .dependencies import exercise_service
@@ -41,3 +41,12 @@ async def find_all(
 ):
     exercise_all = await exercise_service.find_all()
     return exercise_all
+
+@router.get("/filter/muscle_group")
+async def find_all(
+    muscle_group: Muscle_Group,
+    exercise_service:ExerciseService = Depends(exercise_service),
+    user: User = Depends(current_user)
+):
+    exercise_filter = await exercise_service.filter_by_muscle_group(muscle_group)
+    return exercise_filter
