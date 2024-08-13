@@ -13,6 +13,7 @@ class UserRead(schemas.BaseUser[int]):
     height : int
     direction : Direction
     gym_status : GymStatus
+    count_workout: int
     is_active: bool = True
     is_superuser: bool = False
     is_verified: bool = False

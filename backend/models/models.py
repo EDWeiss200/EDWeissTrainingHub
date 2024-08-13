@@ -19,7 +19,7 @@ class User(Base):
     height = Column(Integer,nullable=False)
     direction = Column(String,nullable=False)
     gym_status = Column(String,nullable=False)
-    days_of_training = Column(Integer)
+    count_workout = Column(Integer,nullable=False)
     hashed_password: Mapped[str] = mapped_column(
         String(length=1024), nullable=False
     )
@@ -41,7 +41,7 @@ class User(Base):
             height=self.height,
             direction=self.direction,
             gym_status=self.gym_status,
-            days_of_training=self.days_of_training
+            count_workout = self.count_workout
         ) 
 
 

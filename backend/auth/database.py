@@ -25,7 +25,7 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     height = Column(Integer,nullable=False)
     direction = Column(String,nullable=False)
     gym_status = Column(String,nullable=False)
-    days_of_training = Column(Integer,nullable=False)
+    count_workout = Column(Integer,nullable=False)
     hashed_password: Mapped[str] = mapped_column(
         String(length=1024), nullable=False
     )

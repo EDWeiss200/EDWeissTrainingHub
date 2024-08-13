@@ -53,7 +53,7 @@ class UserInfo(BaseModel):
     height : int 
     direction : Direction
     gym_status : GymStatus
-    days_of_training : int 
+    count_workout: int
 
 
     class Config:
