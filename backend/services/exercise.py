@@ -9,6 +9,7 @@ class ExerciseService:
         exercise_dict = exercise.model_dump()
         exercise_dict['author_id'] = user_id
         exercise_id = await self.exercise_repo.add_one(exercise_dict)
+
         return exercise_id
     
     async def delete_exercise(self,exercise_id):
@@ -18,6 +19,12 @@ class ExerciseService:
     async def find_all(self):
         exercise_all = await self.exercise_repo.find_all()
         return exercise_all
+    
+    async def find_one_by_id(self,id):
+        filters = [self.exercise_repo.model.id == id]
+        exercise = await self.exercise_repo.filter(filters)
+        return exercise
+    
     
     async def filter_by_muscle_group(self,group):
         filters = [self.exercise_repo.model.muscle_group == group]

@@ -3,6 +3,7 @@ from schemas.schemas import WorkoutSchemaAdd,WorkoutSchema
 
 
 class WorkoutService:
+
     def __init__(self,workout_repo: AbstractRepository):
         self.workout_repo: AbstractRepository = workout_repo()
 
@@ -18,10 +19,15 @@ class WorkoutService:
     async def delete_workout(self,workout_id):
         workout_delete_id = await self.workout_repo.delete_one(workout_id)
         return workout_delete_id
-    
+        
     async def find_all(self):
         workout_all = await self.workout_repo.find_all()
         return workout_all
+    
+    async def find_one_by_id(self,id):
+        filters = [self.workout_repo.model.id == id]
+        workout = await self.workout_repo.filter(filters)
+        return workout
     
     async def filter_by_direction(self,direction):
         filters = [self.workout_repo.model.direction == direction]

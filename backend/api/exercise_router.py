@@ -23,6 +23,8 @@ async def add_one_exercise(
 ):
     exercise_id = await exercise_service.add_exercise(exercise,user.id)
     return {"exercise_id" : exercise_id}
+
+
     
 @router.delete("/del")
 async def delete_one(
@@ -50,3 +52,13 @@ async def find_all(
 ):
     exercise_filter = await exercise_service.filter_by_muscle_group(muscle_group)
     return exercise_filter
+
+@router.get("/{id}")
+async def get_exercise(
+    id: int,
+    exercise_service: ExerciseService = Depends(exercise_service),
+    user: User = Depends(current_user)
+):
+    exercise = await exercise_service.find_one_by_id(id)
+    return exercise
+    

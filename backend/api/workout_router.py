@@ -47,3 +47,13 @@ async def find_by_direction(
 ):
     workout_find = await workout_service.filter_by_direction(direction)
     return workout_find
+
+@router.get("/{id}")
+async def get_workout(
+    id: int,
+    workout_service: WorkoutService = Depends(workout_service),
+    user: User = Depends(current_user)
+):
+    workout = await workout_service.find_one_by_id(id)
+    return workout
+    
