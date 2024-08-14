@@ -5,6 +5,7 @@ from services.user import UserSercvice
 from auth.auth import current_user
 from models.models import User
 from schemas.schemas import Direction,GymStatus
+from fastapi_cache.decorator import cache
 
 
 router = APIRouter(
@@ -23,6 +24,7 @@ async def delete_one(
     return {"delete_user": user_id}
 
 @router.get("/all")
+@cache(expire=30)
 async def find_all(
     user_service:UserSercvice = Depends(user_service),
     user:User = Depends(current_user)
@@ -31,7 +33,8 @@ async def find_all(
     return user_all
 
 @router.get("/filter/direction")
-async def find_all(
+
+async def find_all_by_direction(
     direction: Direction,
     user_service: UserSercvice = Depends(user_service),
     user: User = Depends(current_user)
@@ -40,7 +43,8 @@ async def find_all(
     return user_res
 
 @router.get("/filter/gym_status")
-async def find_all(
+@cache(expire=30)
+async def find_all_by_fym_status(
     gym_status: GymStatus,
     user_service: UserSercvice = Depends(user_service),
     user: User = Depends(current_user)

@@ -4,6 +4,8 @@ from schemas.schemas import WorkoutSchemaAdd,Direction
 from .dependencies import workout_service
 from auth.auth import current_user
 from models.models import User
+from fastapi_cache.decorator import cache
+import time
 
 router = APIRouter(
     tags=["workout"],
@@ -32,6 +34,7 @@ async def delete_one(
 
 
 @router.get("/all")
+@cache(expire=30)
 async def find_all(
     workout_service: WorkoutService = Depends(workout_service),
     user:User = Depends(current_user)
@@ -40,6 +43,7 @@ async def find_all(
     return workoyt_all
 
 @router.get("/filter/direction")
+@cache(expire=30)
 async def find_by_direction(
     direction: Direction,
     workout_service: WorkoutService = Depends(workout_service),
@@ -47,6 +51,7 @@ async def find_by_direction(
 ):
     workout_find = await workout_service.filter_by_direction(direction)
     return workout_find
+
 
 @router.get("/{id}")
 async def get_workout(

@@ -7,6 +7,7 @@ from services.exercise import ExerciseService
 from .dependencies import exercise_service
 from auth.auth import current_user
 from auth.database import User
+from fastapi_cache.decorator import cache
 
 router = APIRouter(
     tags=["exercise"],
@@ -37,6 +38,7 @@ async def delete_one(
     return {"delete_exercise": exercise_id}
 
 @router.get("/all")
+@cache(expire=30)
 async def find_all(
     exercise_service:ExerciseService = Depends(exercise_service),
     user:User = Depends(current_user)
@@ -45,7 +47,8 @@ async def find_all(
     return exercise_all
 
 @router.get("/filter/muscle_group")
-async def find_all(
+@cache(expire=30)
+async def find_all_by_muscle_group(
     muscle_group: Muscle_Group,
     exercise_service:ExerciseService = Depends(exercise_service),
     user: User = Depends(current_user)
