@@ -6,6 +6,10 @@ from auth.auth import current_user
 from models.models import User
 from schemas.schemas import Direction,GymStatus
 from fastapi_cache.decorator import cache
+from fastapi import BackgroundTasks
+from tasks.tasks import send_email_up_gymstatus
+from fastapi.responses import JSONResponse
+from pydantic import ValidationError
 
 
 router = APIRouter(
@@ -52,6 +56,16 @@ async def find_all_by_fym_status(
     user_res = await user_service.filter_by_gym_status(gym_status)
     return user_res
 
+
+@router.get("/get_user_by_email")
+async def get_user_info_by_email(
+    user_service: UserSercvice = Depends(user_service),
+    user: User = Depends(current_user)
+):
+    response, tasks= await user_service.get_user_info_by_email(user.id)
+    return JSONResponse(response, background=tasks)
+
+
 @router.get("/{id}")
 async def get_user(
     id: int,
@@ -66,13 +80,18 @@ async def get_user(
 async def completing_workout(
     user_service: UserSercvice = Depends(user_service),
     user: User = Depends(current_user)
+    
 ):
-    user,count,status = await user_service.completing_workout(user.id)
-    return {"user":user,
-            "count_workout": count,
-            "gym_status":status
-            }
+    response, tasks= await user_service.completing_workout(user.id)
+    if tasks:
+        return JSONResponse(response, background=tasks)
+    else:
+        return response
     
 
     
+
+
+
+
 

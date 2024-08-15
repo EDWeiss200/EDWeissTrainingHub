@@ -1,6 +1,8 @@
 from repositories.user import UserRepository
 from utils.repository import AbstractRepository
 from schemas.schemas import UserInfo
+from tasks.tasks import send_email_up_gymstatus,send_email_user_info
+from fastapi import BackgroundTasks
 
 class UserSercvice:
     """
@@ -70,11 +72,26 @@ class UserSercvice:
             'count_workout' : count_workout+1
         }
             
-        
+        tasks = ''
         if status == user_dict['gym_status']:
             user_id = await self.user_repo.update(user_id,values_base)
         else:
             user_id = await self.user_repo.update(user_id,values_up)
+            tasks = BackgroundTasks()
+            tasks.add_task(send_email_up_gymstatus, user_dict['username'], user_dict["email"], status)
+            
             
 
-        return user_id,count_workout+1,status
+        return  {"user": user_id,'new_gym_status': status,'count_workout': count_workout+1} ,tasks
+
+
+    async def get_user_info_by_email(self,user_id):
+        user = await self.find_one_by_id(user_id)
+        user_dict = user[0].model_dump()
+
+        tasks = BackgroundTasks()
+        tasks.add_task(send_email_user_info, user_dict['username'], user_dict["email"], user_dict)
+
+        return {"status": 200},tasks
+            
+        

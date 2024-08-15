@@ -13,7 +13,7 @@ class GymStatus(str, Enum):
     experienced = "experienced"
     master = "master"
     Gigachad = "Gigachad"
-    UltraGigachad = "UltraGigachad"
+    UltraGigachad = "UltraGigaChad"
 
 class Direction(str, Enum):
     workout = "workout"
