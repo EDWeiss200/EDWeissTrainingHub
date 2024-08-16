@@ -104,3 +104,5 @@ class WorkoutSchemaAdd(BaseModel):
     exercise_3id: Optional[int] | None
     exercise_4id: Optional[int] | None
     exercise_5id: Optional[int] | None
+
+

@@ -96,3 +96,4 @@ class Workout(Base):
             exercise_4id=self.exercise_4id,
             exercise_5id=self.exercise_5id
         )
+    

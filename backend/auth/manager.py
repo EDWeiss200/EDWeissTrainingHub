@@ -5,6 +5,7 @@ from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, UUIDIDMixin,IntegerIDMixin,models,schemas,exceptions
 from config import SECRET_USER_MANAGER
 from .database import User, get_user_db
+from tasks.tasks import send_email_after_registr
 
 SECRET = SECRET_USER_MANAGER
 
@@ -15,6 +16,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, uuid.UUID]):
 
     async def on_after_register(self, user: User, request: Optional[Request] = None):
         print(f"User {user.id} has registered.")
+        send_email_after_registr(user.username,user.email)
 
     async def on_after_forgot_password(
         self, user: User, token: str, request: Optional[Request] = None

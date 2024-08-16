@@ -1,4 +1,4 @@
-from fastapi import APIRouter,Depends
+from fastapi import APIRouter,Depends,HTTPException
 from repositories.user import UserRepository
 from .dependencies import user_service
 from services.user import UserSercvice
@@ -10,6 +10,7 @@ from fastapi import BackgroundTasks
 from tasks.tasks import send_email_up_gymstatus
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError
+from config import ADMIN
 
 
 router = APIRouter(
@@ -32,10 +33,12 @@ async def delete_one(
 async def find_all(
     user_service:UserSercvice = Depends(user_service),
     user:User = Depends(current_user)
-):
-    user_all = await user_service.find_all()
-    return user_all
-
+):  
+    if user.id == int(ADMIN):
+        user_all = await user_service.find_all()
+        return user_all
+    raise HTTPException(status_code=403,detail="Forbidden")
+    
 @router.get("/filter/direction")
 
 async def find_all_by_direction(
