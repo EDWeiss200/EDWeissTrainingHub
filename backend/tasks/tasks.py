@@ -61,6 +61,24 @@ def get_email_template_after_register(username,email_user):
     )
     return email
 
+def get_email_template_verification_user(email_user,code):
+    email = EmailMessage()
+    email['Subject'] = "EDWTHub Verification Code"
+    email['From'] = SMTP_USER
+    email['To'] = email_user
+    email.set_content(
+        '<div>'
+        f'<h1 styles="color: green;"> Здравствуйте, ваш 6-значный код:</h1>'
+        '<div>'
+        f'<h1 styles="color: green;">{code}</h1>'
+        '</div>'
+        '</div>',
+        subtype = 'html'
+    )
+    return email
+
+
+
 #@celery.task
 def send_email_up_gymstatus(username: str, email_user,gym_status):
     email = get_email_template_up_gymstatus(username,email_user,gym_status)
@@ -81,3 +99,10 @@ def send_email_after_registr(username: str,email_user):
     with smtplib.SMTP_SSL(SMTP_HOST,SMTP_PORT) as server:
         server.login(SMTP_USER,SMTP_PASS)
         server.send_message(email)
+
+def send_verification_code(email,code):
+    email = get_email_template_verification_user(email,code)
+    with smtplib.SMTP_SSL(SMTP_HOST,SMTP_PORT) as server:
+        server.login(SMTP_USER,SMTP_PASS)
+        server.send_message(email)
+    

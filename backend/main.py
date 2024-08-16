@@ -19,6 +19,7 @@ from redis import asyncio as aioredis
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from fastapi_cache.decorator import cache
+from fastapi.responses import RedirectResponse
 
 
 @asynccontextmanager
@@ -40,6 +41,7 @@ async def home(db = Depends(get_async_session)):
 
 
 #авторизация
+#,requires_verification=True
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
     prefix="/auth/jwt",
@@ -51,6 +53,15 @@ app.include_router(
     prefix="/auth",
     tags=["auth"],
 )
+
+app = FastAPI()
+app.include_router(
+    fastapi_users.get_verify_router(UserRead),
+    prefix="/auth",
+    tags=["auth"],
+)
+
+
 
 
 

@@ -2,7 +2,11 @@ from repositories.user import UserRepository
 from utils.repository import AbstractRepository
 from schemas.schemas import UserInfo
 from tasks.tasks import send_email_up_gymstatus,send_email_user_info
-from fastapi import BackgroundTasks
+from fastapi import BackgroundTasks, HTTPException
+from random import randint
+from tasks.tasks import send_verification_code
+from config import SECRET_JWT,ALGORITHM_JWT
+import jwt
 
 class UserSercvice:
     """
@@ -93,5 +97,36 @@ class UserSercvice:
         tasks.add_task(send_email_user_info, user_dict['username'], user_dict["email"], user_dict)
 
         return {"status": 200},tasks
+    
+
+    async def verification_user_get_token(self,email):
+        
+        verification_code = randint(100000,999999)
+
+        payload= {
+            'key': verification_code
+        }
+        token = jwt.encode(payload, SECRET_JWT, algorithm=ALGORITHM_JWT)
+        send_verification_code(email,verification_code)
+        return token
+    
+
+    async def verification_user(self,token):
+        if self.token == token:
+            filter = [self.user_repo.model.email == self.email]
+            values = {"is_verified" : True}
+
+            user_id = self.user_repo.update_by_filter(filter,values)
+
+            self.token = None
+
+            return {"user" : user_id, "verified" : True}
+        
+        else: 
+
+            return 
+
+
+  
             
         
