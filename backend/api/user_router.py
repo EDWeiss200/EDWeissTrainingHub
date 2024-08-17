@@ -1,4 +1,4 @@
-from fastapi import APIRouter,Depends,HTTPException,Response,Cookie
+from fastapi import APIRouter,Depends,HTTPException,Response,Cookie,Request
 from repositories.user import UserRepository
 from .dependencies import user_service
 from services.user import UserSercvice
@@ -51,24 +51,22 @@ async def find_all_by_direction(
     return user_res
 
 @router.get('/verification_user')
-async def verification_get_key(
-    token: int,
+async def verification_key(
+    response: Response,
+    request: Request,
+    key: int,
     user_service: UserSercvice = Depends(user_service),
-    
-):
-    
-    #try:
-        #decoded_token = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
-        #return decoded_token if decoded_token["expires"] >= time.time() else None
-    #except:
-        #return {}
-    #res = await user_service.verification_user(token)
-    #if res:
-        #return res
-    #else:
-        #raise HTTPException(status_code=403, detail="BAD_TOKEN")
-    print(cookie_email_token)
+    user: User = Depends(current_user)
 
+):
+    token = request.cookies.get('cookie_email_token')
+    res = await user_service.verification_user(key,token,user.id)
+    response.delete_cookie('cookie_email_token')
+    if isinstance(res, dict):
+        return res
+    else:
+        raise res
+    
 
 @router.get("/filter/gym_status")
 @cache(expire=30)
@@ -87,13 +85,14 @@ async def find_all_by_fym_status(
 @router.get('/verification_get_key')
 async def verification_get_key(
     response: Response,
-    email : EmailStr,
     user_service: UserSercvice = Depends(user_service),
-    
+    user: User = Depends(current_user)  
 ):
-    
-    token = await user_service.verification_user_get_token(email)
-    response.set_cookie(key="cookie_email_token", value=token)
+    if not user.is_verified:
+        token = await user_service.verification_user_get_token(user.id,user.email)
+        response.set_cookie(key="cookie_email_token", value=token,expires=60)
+    else:
+        raise HTTPException(status_code=409,detail='USER_ALREADY_VERIFIED')
 
     
 

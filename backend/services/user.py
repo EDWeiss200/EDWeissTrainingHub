@@ -7,6 +7,7 @@ from random import randint
 from tasks.tasks import send_verification_code
 from config import SECRET_JWT,ALGORITHM_JWT
 import jwt
+import time
 
 class UserSercvice:
     """
@@ -99,32 +100,36 @@ class UserSercvice:
         return {"status": 200},tasks
     
 
-    async def verification_user_get_token(self,email):
+    async def verification_user_get_token(self,user_id,email):
         
         verification_code = randint(100000,999999)
 
         payload= {
-            'key': verification_code
+            'key': verification_code,
+            'id' : user_id
         }
         token = jwt.encode(payload, SECRET_JWT, algorithm=ALGORITHM_JWT)
         send_verification_code(email,verification_code)
         return token
     
 
-    async def verification_user(self,token):
-        if self.token == token:
-            filter = [self.user_repo.model.email == self.email]
+    async def verification_user(self,key,token,id):
+        try:
+            decoded_token = jwt.decode(token, SECRET_JWT, algorithms=[ALGORITHM_JWT])
+            token = decoded_token
+        except:
+            return HTTPException(status_code=400,detail='BAD_REQUEST')
+
+        if id == token["id"] and token['key'] == key:
+            filter = [self.user_repo.model.id == token['id']]
             values = {"is_verified" : True}
 
-            user_id = self.user_repo.update_by_filter(filter,values)
-
-            self.token = None
+            user_id = await self.user_repo.update_by_filter(filter,values)
 
             return {"user" : user_id, "verified" : True}
         
         else: 
-
-            return 
+            return HTTPException(status_code=400,detail='BAD_DATA')
 
 
   
