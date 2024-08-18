@@ -58,7 +58,7 @@ class UserSercvice:
         user_res = await self.user_repo.filter(filters)
         return user_res
     
-    async def completing_workout(self,user_id):
+    async def completing_workout(self,user_id,user_verified):
         user = await self.find_one_by_id(user_id)
         user_dict = user[0].model_dump()
         count_workout = user_dict['count_workout']
@@ -82,8 +82,9 @@ class UserSercvice:
             user_id = await self.user_repo.update(user_id,values_base)
         else:
             user_id = await self.user_repo.update(user_id,values_up)
-            tasks = BackgroundTasks()
-            tasks.add_task(send_email_up_gymstatus, user_dict['username'], user_dict["email"], status)
+            if user_verified:
+                tasks = BackgroundTasks()
+                tasks.add_task(send_email_up_gymstatus, user_dict['username'], user_dict["email"], status)
             
             
 

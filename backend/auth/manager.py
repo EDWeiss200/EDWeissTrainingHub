@@ -16,7 +16,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, uuid.UUID]):
 
     async def on_after_register(self, user: User, request: Optional[Request] = None):
         print(f"User {user.id} has registered.")
-        send_email_after_registr(user.username,user.email)
+
 
     async def on_after_forgot_password(
         self, user: User, token: str, request: Optional[Request] = None

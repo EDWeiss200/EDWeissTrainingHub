@@ -103,8 +103,11 @@ async def get_user_info_by_email(
     user_service: UserSercvice = Depends(user_service),
     user: User = Depends(current_user)
 ):
-    response, tasks= await user_service.get_user_info_by_email(user.id)
-    return JSONResponse(response, background=tasks)
+    if user.is_verified:
+        response, tasks= await user_service.get_user_info_by_email(user.id)
+        return JSONResponse(response, background=tasks)
+    else:
+        raise HTTPException(status_code=403,detail="USER IS NOT VERIFIED")
 
 
 @router.get("/{id}")
@@ -123,7 +126,7 @@ async def completing_workout(
     user: User = Depends(current_user)
     
 ):
-    response, tasks= await user_service.completing_workout(user.id)
+    response, tasks= await user_service.completing_workout(user.id,user.is_verified)
     if tasks:
         return JSONResponse(response, background=tasks)
     else:
