@@ -41,7 +41,6 @@ async def home(db = Depends(get_async_session)):
 
 
 #авторизация
-#,requires_verification=True
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
     prefix="/auth/jwt",
