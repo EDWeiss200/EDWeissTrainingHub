@@ -40,7 +40,7 @@ async def home(db = Depends(get_async_session)):
     return "Hello World"
 
 
-#авторизация
+
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
     prefix="/auth/jwt",
