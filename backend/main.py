@@ -34,7 +34,7 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-#Эндпоинт
+
 @app.get("/")
 async def home(db = Depends(get_async_session)):
     return "Hello World"
