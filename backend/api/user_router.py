@@ -14,6 +14,9 @@ from config import ADMIN
 from fastapi.responses import RedirectResponse
 
 
+
+
+
 router = APIRouter(
     tags=["user_bd"],
     prefix="/user_bd"
@@ -28,6 +31,24 @@ async def delete_one(
 ):
     user_id = await user_service.delete_one(id)
     return {"delete_user": user_id}
+
+
+@router.get('/get_token_to_changepass_by_email')
+async def get_token_to_changepass_by_email(
+    response: Response,
+    email: EmailStr,
+    user_service: UserSercvice = Depends(user_service)
+):
+    res = await user_service.get_token_to_changepass_by_email(email)
+    if isinstance(res, HTTPException):
+        raise res
+    else: 
+        response.set_cookie(key="change_pass_cookie", value=res,expires=180)
+
+
+
+
+
 
 @router.get("/all")
 @cache(expire=30)
@@ -51,7 +72,7 @@ async def find_all_by_direction(
     return user_res
 
 @router.get('/verification_user')
-async def verification_key(
+async def verification_user(
     response: Response,
     request: Request,
     key: int,
@@ -62,6 +83,24 @@ async def verification_key(
     token = request.cookies.get('cookie_email_token')
     res = await user_service.verification_user(key,token,user.id)
     response.delete_cookie('cookie_email_token')
+    if isinstance(res, dict):
+        return res
+    else:
+        raise res
+
+
+
+@router.get('/changepass_user_by_email')
+async def changepass_user_by_email(
+    response: Response,
+    request: Request,
+    key: int,
+    new_password: str,
+    user_service: UserSercvice = Depends(user_service)
+):
+    token = request.cookies.get('change_pass_cookie')
+    res = await user_service.changepass_by_email_user(key,token,new_password)
+    response.delete_cookie('change_pass_cookie')
     if isinstance(res, dict):
         return res
     else:
@@ -90,7 +129,7 @@ async def verification_get_key(
 ):
     if not user.is_verified:
         token = await user_service.verification_user_get_token(user.id,user.email)
-        response.set_cookie(key="cookie_email_token", value=token,expires=60)
+        response.set_cookie(key="cookie_email_token", value=token,expires=120)
     else:
         raise HTTPException(status_code=409,detail='USER_ALREADY_VERIFIED')
 
@@ -132,6 +171,10 @@ async def completing_workout(
     else:
         return response
     
+
+
+
+
 
 
 
