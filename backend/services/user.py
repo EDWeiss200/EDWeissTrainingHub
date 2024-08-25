@@ -4,10 +4,14 @@ from schemas.schemas import UserInfo
 from tasks.tasks import send_email_up_gymstatus,send_email_user_info
 from fastapi import BackgroundTasks, HTTPException
 from random import randint
-from tasks.tasks import send_verification_code
+from tasks.tasks import send_verification_code,send_changepass_code
 from config import SECRET_JWT,ALGORITHM_JWT
 import jwt
 import time
+from auth.auth import password_helper
+
+
+
 
 class UserSercvice:
     """
@@ -133,6 +137,47 @@ class UserSercvice:
             return HTTPException(status_code=400,detail='BAD_DATA')
 
 
-  
+    async def get_token_to_changepass_by_email(self,email):
+
+        filters = [self.user_repo.model.email == email]
+
+        user = await self.user_repo.filter(filters)
+        user_dict = user[0].model_dump()
+
+        if user:
+            changepass_code = randint(100000,999999)
+
+            payload= {
+                'key': changepass_code,
+                'user_id': user_dict['id']
+            }
+
+            token = jwt.encode(payload, SECRET_JWT, algorithm=ALGORITHM_JWT)
+            send_changepass_code(email,changepass_code)
+            return token
+        
+        else:
+            return HTTPException(status_code=400,detail='UNIDENTIFIED EMAIL')
             
         
+    async def changepass_by_email_user(self,key,token,password):
+            try:
+                decoded_token = jwt.decode(token, SECRET_JWT, algorithms=[ALGORITHM_JWT])
+                token = decoded_token
+            except:
+                return HTTPException(status_code=400,detail='BAD_REQUEST')
+
+            if key == token['key']:
+
+                hashed_password = password_helper.hash(password)
+
+                filter = [self.user_repo.model.id == token['user_id']]
+                values = {"hashed_password" : hashed_password}
+
+                user_id = await self.user_repo.update_by_filter(filter,values)
+
+                return {"user" : user_id, "new_password" : password}
+
+            else:
+                return HTTPException(status_code=401,detail='BAD_KEY')
+            
