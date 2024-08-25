@@ -5,6 +5,16 @@ from .database import User
 from fastapi_users.authentication import JWTStrategy
 from config import SECRET_AUTH
 import fastapi_users
+from fastapi_users.password import PasswordHelper
+from pwdlib import PasswordHash, exceptions
+from pwdlib.hashers.argon2 import Argon2Hasher
+
+
+
+
+
+
+
 cookie_transport = CookieTransport(cookie_name="gym_cookie",cookie_max_age=7200)
 
 
@@ -26,5 +36,10 @@ fastapi_users = FastAPIUsers[User, int](
     [auth_backend],
 )
 
+
+password_hash = PasswordHash((
+    Argon2Hasher(),
+))
+password_helper = PasswordHelper(password_hash)
 current_user = fastapi_users.current_user()
 
