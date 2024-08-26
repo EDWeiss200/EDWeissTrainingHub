@@ -22,7 +22,6 @@ class UserSercvice:
     master = "master"
     Gigachad = "Gigachad"
     UltraGigachad = "UltraGigachad"
-
     """
     
 
