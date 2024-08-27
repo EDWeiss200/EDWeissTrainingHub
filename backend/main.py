@@ -15,7 +15,7 @@ from api.user_router import router as user_router
 from api.workout_router import router as workout_router
 
 from redis import asyncio as aioredis
-
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 
@@ -34,7 +34,29 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-#тест
+
+
+origins = [
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1",
+    "http://localhost",
+    "http://localhost:5173",
+    "http://localhost:5173/",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+
+
+
+
 @app.get("/")
 async def home(db = Depends(get_async_session)):
     return "Hello World"

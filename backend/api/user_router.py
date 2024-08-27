@@ -54,12 +54,12 @@ async def get_token_to_changepass_by_email(
 @cache(expire=30)
 async def find_all(
     user_service:UserSercvice = Depends(user_service),
-    user:User = Depends(current_user)
+    #user:User = Depends(current_user)
 ):  
-    if user.is_superuser:
-        user_all = await user_service.find_all()
-        return user_all
-    raise HTTPException(status_code=403,detail="Forbidden")
+    #if user.is_superuser:
+    user_all = await user_service.find_all()
+    return user_all
+    #raise HTTPException(status_code=403,detail="Forbidden")
     
 @router.get("/filter/direction")
 
@@ -149,11 +149,11 @@ async def get_user_info_by_email(
         raise HTTPException(status_code=403,detail="USER IS NOT VERIFIED")
 
 
-@router.get("/{id}")
+@router.get("/get_user")
 async def get_user(
     id: int,
     user_service: UserSercvice = Depends(user_service),
-    user: User = Depends(current_user)
+    #user: User = Depends(current_user)
 ):
     user = await user_service.find_one_by_id(id)
     return user

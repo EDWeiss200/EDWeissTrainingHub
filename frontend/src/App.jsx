@@ -1,11 +1,12 @@
 import { useState } from 'react'
+import AuthForm from './components/AuthForm'
 
 function App() {
-  const [count, setCount] = useState(0)
+
 
   return (
     <>
-      Hello World
+      <AuthForm/>
     </>
   )
 }
