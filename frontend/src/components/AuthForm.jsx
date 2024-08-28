@@ -17,16 +17,12 @@ import axios from 'axios';
 const AuthForm = () => {
 
 
-  const [email, setEmail] = useState('none')
-  const [password, setPassword] = useState('none')
 
 
 
   
   const onFinish = (values) => {
-    setEmail(values['email'])
-    setPassword(values['password'])
-    CheckUserAuth()
+    CheckUserAuth(values['email'],values['password'])
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -34,15 +30,13 @@ const AuthForm = () => {
   };
 
 
-  const [authstatus, setAuthstatus] = useState('Вы не авторизованы')
+  const [authstatus, setAuthstatus] = useState(false)
   const [AuthRequest, setAuthRequest] = useState(0)
   
-  function CheckUserAuth() {
+  function CheckUserAuth(email_user,password_user) {
     const params = new URLSearchParams();
-    params.append('username', email);
-    params.append('password', password);
-    console.log(email)
-    console.log(password)
+    params.append('username', email_user);
+    params.append('password', password_user);
     axios.post(
       'http://127.0.0.1:8000/auth/jwt/login', 
       params
@@ -52,14 +46,16 @@ const AuthForm = () => {
         }
     )
     if (AuthRequest == 204){
-      setAuthstatus('Вы успешно авторизовались')
+      setAuthstatus(true)
+      console.log(authstatus)
     }
+    console.log(authstatus)
     
   
   }
 
   return(
-    <div>
+    <div className='flex'>
       <Form
         name="basic"
         labelCol={{
@@ -98,7 +94,6 @@ const AuthForm = () => {
           label="Password"
           name="password"
           id='password'
-          value = {password}
           rules={[
             {
               required: true,
@@ -132,7 +127,7 @@ const AuthForm = () => {
           </Button>
         </Form.Item>
       </Form>
-    <p>{authstatus}</p>
+      <p>{authstatus}</p>
     </div>
 
   )
