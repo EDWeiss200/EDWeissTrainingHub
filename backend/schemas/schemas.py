@@ -91,6 +91,7 @@ class WorkoutSchema(BaseModel):
     exercise_3id : Optional[int] | None
     exercise_4id : Optional[int] | None
     exercise_5id : Optional[int] | None
+    like_count: int
 
     class Config:
         from_attributes = True

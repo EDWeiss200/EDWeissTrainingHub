@@ -82,6 +82,7 @@ class Workout(Base):
     exercise_3id = Column(Integer,ForeignKey("exercises.id"), nullable=True)
     exercise_4id = Column(Integer,ForeignKey("exercises.id"), nullable=True)
     exercise_5id = Column(Integer,ForeignKey("exercises.id"), nullable=True)
+    like_count = Column(Integer,nullable=False)
 
     def to_read_model(self) -> WorkoutSchema:
         return WorkoutSchema(
@@ -94,6 +95,10 @@ class Workout(Base):
             exercise_2id=self.exercise_2id,
             exercise_3id=self.exercise_3id,
             exercise_4id=self.exercise_4id,
-            exercise_5id=self.exercise_5id
+            exercise_5id=self.exercise_5id,
+            like_count=self.like_count
         )
     
+
+class LikeWorkout(Base):
+    pass 
