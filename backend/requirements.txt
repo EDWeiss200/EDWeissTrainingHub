@@ -1,8 +1,6 @@
-fastapi
+fastapi[standard]
 pydantic
 sqlalchemy
 fastapi-users
-psycopg
-asyncpg
-smtplib
-dotenv
+fastapi-users-db-sqlalchemy
+python-dotenv
