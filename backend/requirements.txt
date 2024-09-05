@@ -1,0 +1,8 @@
+fastapi
+pydantic
+sqlalchemy
+fastapi-users
+psycopg
+asyncpg
+smtplib
+dotenv

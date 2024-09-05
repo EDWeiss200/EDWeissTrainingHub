@@ -1,7 +1,6 @@
 import smtplib
 from email.message import EmailMessage
 
-from celery import Celery
 from config import SMTP_PASS,SMTP_USER
 
 SMTP_HOST = "smtp.gmail.com"

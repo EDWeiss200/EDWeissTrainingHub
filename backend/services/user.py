@@ -7,7 +7,6 @@ from random import randint
 from tasks.tasks import send_verification_code,send_changepass_code
 from config import SECRET_JWT,ALGORITHM_JWT
 import jwt
-import time
 from auth.auth import password_helper
 
 
