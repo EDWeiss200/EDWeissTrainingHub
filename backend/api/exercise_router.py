@@ -6,7 +6,7 @@ from repositories.exercise import ExerciseRepository
 from services.exercise import ExerciseService
 from .dependencies import exercise_service
 from auth.auth import current_user
-from auth.database import User
+from models.models import User
 from fastapi_cache.decorator import cache
 
 router = APIRouter(

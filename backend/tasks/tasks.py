@@ -6,7 +6,7 @@ from config import SMTP_PASS,SMTP_USER
 SMTP_HOST = "smtp.gmail.com"
 SMTP_PORT = 465
 
-celery = Celery('tasks',broker='redis://localhost:6379')
+
 
 def get_email_template_up_gymstatus(username: str, email_user,gym_status):
     email = EmailMessage()

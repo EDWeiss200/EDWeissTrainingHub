@@ -1,7 +1,7 @@
 from fastapi_users.authentication import CookieTransport,AuthenticationBackend
 from fastapi_users import FastAPIUsers
 from .manager import get_user_manager
-from .database import User
+from .database import User_Now as User
 from fastapi_users.authentication import JWTStrategy
 from config import SECRET_AUTH
 import fastapi_users

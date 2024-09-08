@@ -4,7 +4,7 @@ from typing import Optional
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, UUIDIDMixin,IntegerIDMixin,models,schemas,exceptions
 from config import SECRET_USER_MANAGER
-from .database import User, get_user_db
+from .database import User_Now as User, get_user_db
 from tasks.tasks import send_email_after_registr
 
 SECRET = SECRET_USER_MANAGER

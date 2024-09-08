@@ -1,7 +1,8 @@
-from sqlalchemy import MetaData,String,Integer,Column,ForeignKey
-from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy import Boolean, ForeignKey, Integer, String, func, select,Column
-from sqlalchemy.orm import Mapped, declared_attr, mapped_column
+
+from sqlalchemy.orm import DeclarativeBase,Mapped,mapped_column,relationship
+from fastapi_users.db import SQLAlchemyBaseUserTable, SQLAlchemyUserDatabase
+from sqlalchemy import Boolean, ForeignKey, Integer, String, func, select,Column,MetaData
+
 from schemas.schemas import UserInfo,ExerciseSchema,WorkoutSchema
 metadata = MetaData()
 
@@ -9,7 +10,7 @@ class Base(DeclarativeBase):
     pass
 
 
-class User(Base):
+class User(SQLAlchemyBaseUserTable[int],Base):
     __tablename__= "users"
     id = Column(Integer,index =True,primary_key = True)
     username = Column(String,nullable=False)
@@ -31,6 +32,10 @@ class User(Base):
         Boolean, default=False, nullable=False
     )
 
+    workout_liked: Mapped[list['Workout']] = relationship(
+        secondary="likes_workout_by_user"
+    )
+
     def to_read_model(self) -> UserInfo:
         return UserInfo(
             id = self.id,
@@ -41,7 +46,8 @@ class User(Base):
             height=self.height,
             direction=self.direction,
             gym_status=self.gym_status,
-            count_workout = self.count_workout
+            count_workout = self.count_workout,
+            workout_liked= self.workout_liked
         ) 
 
 
@@ -82,7 +88,10 @@ class Workout(Base):
     exercise_3id = Column(Integer,ForeignKey("exercises.id"), nullable=True)
     exercise_4id = Column(Integer,ForeignKey("exercises.id"), nullable=True)
     exercise_5id = Column(Integer,ForeignKey("exercises.id"), nullable=True)
-    like_count = Column(Integer,nullable=False)
+    
+    user_liked: Mapped[list["User"]] = relationship(
+        secondary="likes_workout_by_user"
+    )
 
     def to_read_model(self) -> WorkoutSchema:
         return WorkoutSchema(
@@ -101,5 +110,15 @@ class Workout(Base):
     
 
 
-class LikeWorkout(Base):
-    pass 
+class LikeWorkoutByUser(Base):
+    __tablename__ = "likes_workout_by_user"
+
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey('users.id',ondelete='CASCADE'),
+        primary_key=True
+    )
+    workout_id: Mapped[int] = mapped_column(
+        ForeignKey('workout.id',ondelete='CASCADE'),
+        primary_key=True
+    )
+    

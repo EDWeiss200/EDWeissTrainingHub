@@ -1,6 +1,7 @@
 from abc import ABC,abstractmethod
 from databse import async_session_maker
 from sqlalchemy import insert,select,delete,update
+from sqlalchemy.orm import selectinload,load_only
 
 
 class AbstractRepository(ABC):
@@ -23,6 +24,10 @@ class AbstractRepository(ABC):
     
     @abstractmethod
     async def update():
+        raise NotImplementedError
+
+    @abstractmethod
+    async def m2m_find_all():
         raise NotImplementedError
 
 
@@ -93,5 +98,14 @@ class SQLAlchemyRepository(AbstractRepository):
             await session.commit()
             return res.scalar_one()
 
+    async def m2m_find_all(self,select):
+        async with async_session_maker() as session:
+            query = (
+                select(self.model)
+                .options(selectinload(select))
 
+            )
+            res =  await session.execute(query)
+            result_orm = res.scalars().all()
 
+            return result_orm
