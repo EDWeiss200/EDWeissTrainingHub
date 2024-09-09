@@ -1,13 +1,13 @@
 from repositories.user import UserRepository
 from utils.repository import AbstractRepository
-from schemas.schemas import UserInfo
+from schemas.schemas import UserInfo,UserInfoRelationship,WorkoutLikedSchema
 from tasks.tasks import send_email_up_gymstatus,send_email_user_info
 from fastapi import BackgroundTasks, HTTPException
 from random import randint
 from tasks.tasks import send_verification_code,send_changepass_code
 from config import SECRET_JWT,ALGORITHM_JWT
 import jwt
-from  models.models import User
+from  models.models import User,Workout
 from auth.auth import password_helper
 
 
@@ -44,21 +44,8 @@ class UserSercvice:
 
     async def find_all(self):
 
-        """
-        
-        ERROR
-        ERROR
-        ERROR
-        ERROR
-        ERROR
-        ERROR
-        ERROR
-
-        """
-        select = None
-        user_all = await self.user_repo.m2m_find_all(select)
-        result = [UserInfo.model_validate(row,from_attributes=True) for row in user_all]
-        return result
+        users_all = await self.user_repo.find_all()
+        return users_all
     
     async def find_one_by_id(self,id):
         filters = [self.user_repo.model.id == id]
@@ -193,4 +180,14 @@ class UserSercvice:
 
             else:
                 return HTTPException(status_code=401,detail='BAD_KEY')
-            
+    
+    async def find_liked_workout(self,user_id):
+
+        stmt = User.workout_liked
+        loadOnly = Workout.id
+        user_all = await self.user_repo.m2m_find_all(stmt,loadOnly,user_id)
+        result = [UserInfoRelationship.model_validate(row,from_attributes=True) for row in user_all]
+        print(result)
+        for i in result[0]:
+            if i[0] == 'workout_liked':
+                return i[1]

@@ -89,6 +89,15 @@ async def verification_user(
         raise res
 
 
+@router.get('/liked_workout')
+async def liked_workout_by_user(
+    user_service: UserSercvice = Depends(user_service),
+    user: User = Depends(current_user)
+):
+    res = await user_service.find_liked_workout(user.id)
+    return res
+
+
 
 @router.get('/changepass_user_by_email')
 async def changepass_user_by_email(

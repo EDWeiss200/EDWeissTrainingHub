@@ -2,7 +2,7 @@ from abc import ABC,abstractmethod
 from databse import async_session_maker
 from sqlalchemy import insert,select,delete,update
 from sqlalchemy.orm import selectinload,load_only
-
+from .strategy import AbstractRelationShipStrategy
 
 class AbstractRepository(ABC):
 
@@ -34,6 +34,7 @@ class AbstractRepository(ABC):
 class SQLAlchemyRepository(AbstractRepository):
 
     model = None
+    strategy: AbstractRelationShipStrategy = None
 
     async def add_one(self, data : dict) -> int:
         async with async_session_maker() as session:
@@ -98,13 +99,11 @@ class SQLAlchemyRepository(AbstractRepository):
             await session.commit()
             return res.scalar_one()
 
-    async def m2m_find_all(self,select):
+    async def m2m_find_all(self,stmt,loadOnly,user_id):
         async with async_session_maker() as session:
-            query = (
-                select(self.model)
-                .options(selectinload(select))
+            
+            query = await self.strategy.selectinload_query(stmt,loadOnly,user_id)
 
-            )
             res =  await session.execute(query)
             result_orm = res.scalars().all()
 

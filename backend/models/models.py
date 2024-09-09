@@ -33,6 +33,7 @@ class User(SQLAlchemyBaseUserTable[int],Base):
     )
 
     workout_liked: Mapped[list['Workout']] = relationship(
+        back_populates='user_liked',
         secondary="likes_workout_by_user"
     )
 
@@ -47,7 +48,6 @@ class User(SQLAlchemyBaseUserTable[int],Base):
             direction=self.direction,
             gym_status=self.gym_status,
             count_workout = self.count_workout,
-            workout_liked= self.workout_liked
         ) 
 
 
@@ -90,6 +90,7 @@ class Workout(Base):
     exercise_5id = Column(Integer,ForeignKey("exercises.id"), nullable=True)
     
     user_liked: Mapped[list["User"]] = relationship(
+        back_populates='workout_liked',
         secondary="likes_workout_by_user"
     )
 

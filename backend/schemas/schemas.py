@@ -54,11 +54,17 @@ class UserInfo(BaseModel):
     direction : Direction
     gym_status : GymStatus
     count_workout: int
-    workout_liked: list["WorkoutSchema"]
 
 
     class Config:
         from_attributes = True
+
+class UserInfoRelationship(UserInfo):
+    workout_liked: list["WorkoutLikedSchema"]
+
+    class Config:
+        from_attributes = True
+
 
 class ExerciseSchema(BaseModel):
     id : int
@@ -72,6 +78,10 @@ class ExerciseSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+class WorkoutLikedSchema(BaseModel):
+    id: int
+    name: str
 
 class ExerciseSchemaAdd(BaseModel):
     name : str
