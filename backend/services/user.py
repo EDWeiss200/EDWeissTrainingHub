@@ -187,7 +187,6 @@ class UserSercvice:
         loadOnly = Workout.id
         user_all = await self.user_repo.m2m_find_all(stmt,loadOnly,user_id)
         result = [UserInfoRelationship.model_validate(row,from_attributes=True) for row in user_all]
-        print(result)
         for i in result[0]:
             if i[0] == 'workout_liked':
                 return i[1]

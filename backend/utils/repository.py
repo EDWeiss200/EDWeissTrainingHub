@@ -102,7 +102,7 @@ class SQLAlchemyRepository(AbstractRepository):
     async def m2m_find_all(self,stmt,loadOnly,user_id):
         async with async_session_maker() as session:
             
-            query = await self.strategy.selectinload_query(stmt,loadOnly,user_id)
+            query = await self.strategy.liked_workout_by_user(stmt,loadOnly,user_id)
 
             res =  await session.execute(query)
             result_orm = res.scalars().all()

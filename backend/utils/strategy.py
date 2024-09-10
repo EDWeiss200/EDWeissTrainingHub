@@ -6,17 +6,14 @@ from models.models import User
 class AbstractRelationShipStrategy(ABC):
 
     @abstractmethod
-    async def selectinload_query():
+    async def liked_workout_by_user():
         raise NotImplementedError
 
-    @abstractmethod
-    async def joinedloadSRS():
-        raise NotImplementedError
 
 
 class UserRelationshipStrategy(AbstractRelationShipStrategy):
 
-    async def selectinload_query(stmt,loadOnly,user_id):
+    async def liked_workout_by_user(stmt,loadOnly,user_id):
         query = (
             select(User)
             .where(User.id == user_id)

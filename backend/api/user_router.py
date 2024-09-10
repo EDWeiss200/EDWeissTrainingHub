@@ -143,9 +143,6 @@ async def verification_get_key(
         raise HTTPException(status_code=409,detail='USER_ALREADY_VERIFIED')
 
     
-
-
-
 @router.get("/get_user_by_email")
 async def get_user_info_by_email(
     user_service: UserSercvice = Depends(user_service),

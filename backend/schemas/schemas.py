@@ -19,8 +19,6 @@ class Direction(str, Enum):
     workout = "workout"
     powerlifting = "powerlifting"
     crossfit = "crossfit"
-    sucker = "sucker"
-    drochila = "drochila"
     Gigachad = "Gigachad"
 
 
