@@ -16,7 +16,7 @@ router = APIRouter(
 
 
 
-@router.post("/add")
+@router.post("")
 async def add_one_exercise(
     exercise : ExerciseSchemaAdd,
     exercise_service : ExerciseService = Depends(exercise_service),
@@ -27,7 +27,7 @@ async def add_one_exercise(
 
 
     
-@router.delete("/del")
+@router.delete("/{id}")
 async def delete_one(
     id: int,
     exercise_service: ExerciseService = Depends(exercise_service),
@@ -37,7 +37,7 @@ async def delete_one(
     exercise_id = await exercise_service.delete_exercise(id)
     return {"delete_exercise": exercise_id}
 
-@router.get("/all")
+@router.get("")
 @cache(expire=30)
 async def find_all(
     exercise_service:ExerciseService = Depends(exercise_service),

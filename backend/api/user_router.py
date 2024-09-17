@@ -23,14 +23,16 @@ router = APIRouter(
 )
 
 
-@router.delete("/del")
+@router.delete("/{id}")
 async def delete_one(
     id: int,
     user_service : UserSercvice = Depends(user_service),
     user: User = Depends(current_user)
 ):
-    user_id = await user_service.delete_one(id)
-    return {"delete_user": user_id}
+    if user.is_superuser:
+        user_id = await user_service.delete_one(id)
+        return {"delete_user": user_id}
+    raise HTTPException(status_code=403,detail='NOT IS_SUPERUSER')
 
 
 @router.get('/get_token_to_changepass_by_email')
@@ -50,7 +52,7 @@ async def get_token_to_changepass_by_email(
 
 
 
-@router.get("/all")
+@router.get("")
 @cache(expire=30)
 async def find_all(
     user_service:UserSercvice = Depends(user_service),
@@ -155,7 +157,7 @@ async def get_user_info_by_email(
         raise HTTPException(status_code=403,detail="USER IS NOT VERIFIED")
 
 
-@router.get("/get_user")
+@router.get("/get_current_user")
 async def get_user(
     id: int,
     user_service: UserSercvice = Depends(user_service),
