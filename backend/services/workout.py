@@ -1,5 +1,5 @@
 from utils.repository import AbstractRepository
-from schemas.schemas import WorkoutSchemaAdd,WorkoutSchema
+from schemas.schemas import WorkoutSchemaAdd,WorkoutSchema,WorkoutInfoRelationship
 
 
 class WorkoutService:
@@ -33,3 +33,29 @@ class WorkoutService:
         filters = [self.workout_repo.model.direction == direction]
         workout_res = await self.workout_repo.filter(filters)
         return workout_res
+
+    async def find_liked_users(self,workout_id):
+        
+        relation_ship = self.workout_repo.model.user_liked
+        users_all = await self.workout_repo.relationship_base_find(relation_ship,workout_id)
+        result = [WorkoutInfoRelationship.model_validate(row,from_attributes=True) for row in users_all]
+
+        for i in result[0]:
+            if i[0] == 'user_liked':
+                return i[1]
+
+    async def find_liked_users_count(self,workout_id):
+        
+        relation_ship = self.workout_repo.model.user_liked
+        users_all = await self.workout_repo.relationship_base_find(relation_ship,workout_id)
+        result = [WorkoutInfoRelationship.model_validate(row,from_attributes=True) for row in users_all]
+
+        count = 0
+        for i in result[0]:
+            if i[0] == 'user_liked':
+                for j in i[1:]:
+                    count+=1
+
+        return count
+
+

@@ -63,6 +63,10 @@ class UserInfoRelationship(UserInfo):
     class Config:
         from_attributes = True
 
+class UserLikeSchema(BaseModel):
+    id:int
+    username: str
+
 
 class ExerciseSchema(BaseModel):
     id : int
@@ -115,4 +119,12 @@ class WorkoutSchemaAdd(BaseModel):
     exercise_4id: Optional[int] | None
     exercise_5id: Optional[int] | None
 
+
+
+
+class WorkoutInfoRelationship(WorkoutSchema):
+    user_liked: list["UserLikeSchema"]
+
+    class Config:
+        from_attributes = True
 

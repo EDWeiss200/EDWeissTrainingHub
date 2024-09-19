@@ -1,7 +1,8 @@
 from fastapi import APIRouter,Depends,HTTPException,Response,Cookie,Request
 from repositories.user import UserRepository
-from .dependencies import user_service
+from .dependencies import user_service,likedworkout_service
 from services.user import UserSercvice
+from services.liked_workout_by_user import LikedWorkoutService
 from auth.auth import current_user
 from models.models import User
 from schemas.schemas import Direction,GymStatus
@@ -18,8 +19,8 @@ from fastapi.responses import RedirectResponse
 
 
 router = APIRouter(
-    tags=["user_bd"],
-    prefix="/user_bd"
+    tags=["users"],
+    prefix="/users"
 )
 
 
@@ -48,6 +49,19 @@ async def get_token_to_changepass_by_email(
         response.set_cookie(key="change_pass_cookie", value=res,expires=180)
 
 
+@router.post("/like_workout/{id}")
+async def like_workout(
+    id: int,
+    user: User = Depends(current_user),
+    likedworkout_service: LikedWorkoutService = Depends(likedworkout_service)
+):
+    res = await likedworkout_service.like_workout(user.id,id)
+    if res:
+        return {'status':200}
+    else:
+        raise HTTPException(status_code=404, detail="NOT FOUND WORKOUT")
+
+
 
 
 
@@ -56,12 +70,12 @@ async def get_token_to_changepass_by_email(
 @cache(expire=30)
 async def find_all(
     user_service:UserSercvice = Depends(user_service),
-    #user:User = Depends(current_user)
+    user:User = Depends(current_user)
 ):  
-    #if user.is_superuser:
-    user_all = await user_service.find_all()
-    return user_all
-    #raise HTTPException(status_code=403,detail="Forbidden")
+    if user.is_superuser:
+        user_all = await user_service.find_all()
+        return user_all
+    raise HTTPException(status_code=403,detail="Forbidden")
     
 @router.get("/filter/direction")
 

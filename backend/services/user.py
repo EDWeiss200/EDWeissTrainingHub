@@ -1,4 +1,4 @@
-from repositories.user import UserRepository
+
 from utils.repository import AbstractRepository
 from schemas.schemas import UserInfo,UserInfoRelationship,WorkoutLikedSchema
 from tasks.tasks import send_email_up_gymstatus,send_email_user_info
@@ -7,7 +7,6 @@ from random import randint
 from tasks.tasks import send_verification_code,send_changepass_code
 from config import SECRET_JWT,ALGORITHM_JWT
 import jwt
-from  models.models import User,Workout
 from auth.auth import password_helper
 
 
@@ -183,10 +182,12 @@ class UserSercvice:
     
     async def find_liked_workout(self,user_id):
 
-        stmt = User.workout_liked
-        loadOnly = Workout.id
-        user_all = await self.user_repo.m2m_find_all(stmt,loadOnly,user_id)
-        result = [UserInfoRelationship.model_validate(row,from_attributes=True) for row in user_all]
+        relationship = self.user_repo.model.workout_liked
+        workout_all = await self.user_repo.relationship_base_find(relationship,user_id)
+        result = [UserInfoRelationship.model_validate(row,from_attributes=True) for row in workout_all]
+    
+    
         for i in result[0]:
             if i[0] == 'workout_liked':
                 return i[1]
+

@@ -1,10 +1,16 @@
-
+from typing import Annotated
 from sqlalchemy.orm import DeclarativeBase,Mapped,mapped_column,relationship
 from fastapi_users.db import SQLAlchemyBaseUserTable, SQLAlchemyUserDatabase
 from sqlalchemy import Boolean, ForeignKey, Integer, String, func, select,Column,MetaData
-
 from schemas.schemas import UserInfo,ExerciseSchema,WorkoutSchema
+
+
+intpk = Annotated[int, mapped_column(index = True,primary_key=True)]
+
+
 metadata = MetaData()
+
+
 
 class Base(DeclarativeBase):
     pass
@@ -34,7 +40,7 @@ class User(SQLAlchemyBaseUserTable[int],Base):
 
     workout_liked: Mapped[list['Workout']] = relationship(
         back_populates='user_liked',
-        secondary="likes_workout_by_user"
+        secondary="liked_workout_by_user"
     )
 
     def to_read_model(self) -> UserInfo:
@@ -91,7 +97,7 @@ class Workout(Base):
     
     user_liked: Mapped[list["User"]] = relationship(
         back_populates='workout_liked',
-        secondary="likes_workout_by_user"
+        secondary="liked_workout_by_user"
     )
 
     def to_read_model(self) -> WorkoutSchema:
@@ -112,8 +118,7 @@ class Workout(Base):
 
 
 class LikeWorkoutByUser(Base):
-    __tablename__ = "likes_workout_by_user"
-
+    __tablename__ = "liked_workout_by_user"
     user_id: Mapped[int] = mapped_column(
         ForeignKey('users.id',ondelete='CASCADE'),
         primary_key=True

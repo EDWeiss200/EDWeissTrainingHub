@@ -10,8 +10,8 @@ from models.models import User
 from fastapi_cache.decorator import cache
 
 router = APIRouter(
-    tags=["exercise"],
-    prefix="/exercise"
+    tags=["exercises"],
+    prefix="/exercises"
 )
 
 

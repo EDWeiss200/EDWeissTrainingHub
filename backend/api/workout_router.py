@@ -1,4 +1,4 @@
-from fastapi import APIRouter,Depends
+from fastapi import APIRouter,Depends,HTTPException
 from services.workout import WorkoutService
 from schemas.schemas import WorkoutSchemaAdd,Direction
 from .dependencies import workout_service
@@ -8,8 +8,8 @@ from fastapi_cache.decorator import cache
 import time
 
 router = APIRouter(
-    tags=["workout"],
-    prefix="/workout"
+    tags=["workouts"],
+    prefix="/workouts"
 )
 
 
@@ -51,6 +51,33 @@ async def find_by_direction(
 ):
     workout_find = await workout_service.filter_by_direction(direction)
     return workout_find
+
+
+@router.get("/user_like/{workout_id}")
+@cache(expire=30)
+async def user_like(
+    workout_id: int,
+    workout_service: WorkoutService = Depends(workout_service)
+):
+    res = await workout_service.find_liked_users(workout_id)
+    if res:
+        return res
+    else:
+        raise HTTPException(status = 400, detail="NOT FOUND WORKOUT")
+
+
+
+@router.get("/user_like/{workout_id}/count")
+@cache(expire=30)
+async def user_like(
+    workout_id: int,
+    workout_service: WorkoutService = Depends(workout_service)
+):
+    res = await workout_service.find_liked_users_count(workout_id)
+    if res:
+        return {'user_like': res}
+    else:
+        raise HTTPException(status = 400, detail="NOT FOUND WORKOUT")
 
 
 @router.get("/{id}")

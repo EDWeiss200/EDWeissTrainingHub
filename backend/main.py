@@ -6,7 +6,6 @@ import uvicorn
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
-from databse import get_async_session,AsyncGenerator
 
 from auth.auth import auth_backend,fastapi_users
 from auth.schemas import UserCreate,UserRead
@@ -58,7 +57,7 @@ app.add_middleware(
 
 
 @app.get("/")
-async def home(db = Depends(get_async_session)):
+async def home():
     return "Hello World"
 
 

@@ -2,12 +2,16 @@ from abc import ABC,abstractmethod
 from databse import async_session_maker
 from sqlalchemy import insert,select,delete,update
 from sqlalchemy.orm import selectinload,load_only
-from .strategy import AbstractRelationShipStrategy
+
 
 class AbstractRepository(ABC):
 
     @abstractmethod
     async def add_one():
+        raise NotImplementedError
+
+    @abstractmethod
+    async def add_one_not_return():
         raise NotImplementedError
     
     @abstractmethod
@@ -27,14 +31,15 @@ class AbstractRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def m2m_find_all():
+    async def relationship_base_find():
         raise NotImplementedError
+
 
 
 class SQLAlchemyRepository(AbstractRepository):
 
     model = None
-    strategy: AbstractRelationShipStrategy = None
+
 
     async def add_one(self, data : dict) -> int:
         async with async_session_maker() as session:
@@ -46,6 +51,16 @@ class SQLAlchemyRepository(AbstractRepository):
             res = await session.execute(stmt)
             await session.commit()
             return res.scalar_one()
+    
+    async def add_one_not_return(self, data : dict) -> int:
+        async with async_session_maker() as session:
+            stmt = (
+                insert(self.model).
+                values(**data)
+            )
+            await session.execute(stmt)
+            await session.commit()
+            return True
 
     async def find_all(self):
       async with async_session_maker() as session:
@@ -99,11 +114,16 @@ class SQLAlchemyRepository(AbstractRepository):
             await session.commit()
             return res.scalar_one()
 
-    async def m2m_find_all(self,stmt,loadOnly,user_id):
-        async with async_session_maker() as session:
-            
-            query = await self.strategy.liked_workout_by_user(stmt,loadOnly,user_id)
-
+    async def relationship_base_find(self,relationship,column):
+        async with async_session_maker() as session:  
+            #query = await self.strategy.relationship_query(relationship,user_id)
+            #query = await RelationShipQuery.relationship_query(self.model,relationship,user_id)
+            query = (
+                select(self.model)
+                .where(self.model.id == column)
+                .options(selectinload(relationship))
+                
+            )
             res =  await session.execute(query)
             result_orm = res.scalars().all()
 
