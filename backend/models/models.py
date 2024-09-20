@@ -112,7 +112,6 @@ class Workout(Base):
             exercise_3id=self.exercise_3id,
             exercise_4id=self.exercise_4id,
             exercise_5id=self.exercise_5id,
-            like_count=self.like_count
         )
     
 

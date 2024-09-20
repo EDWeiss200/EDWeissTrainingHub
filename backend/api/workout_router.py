@@ -1,10 +1,12 @@
 from fastapi import APIRouter,Depends,HTTPException
 from services.workout import WorkoutService
+from services.liked_workout_by_user import LikedWorkoutService
 from schemas.schemas import WorkoutSchemaAdd,Direction
-from .dependencies import workout_service
+from .dependencies import workout_service,likedworkout_service
 from auth.auth import current_user
 from models.models import User
 from fastapi_cache.decorator import cache
+
 import time
 
 router = APIRouter(
@@ -79,6 +81,19 @@ async def user_like(
     else:
         raise HTTPException(status = 400, detail="NOT FOUND WORKOUT")
 
+@router.get("/most_liked")
+async def most_liked(
+    user: User = Depends(current_user),
+    liked_workout: LikedWorkoutService= Depends(likedworkout_service),
+    workout_service: WorkoutService = Depends(workout_service)
+):
+
+    workouts = await liked_workout.most_liked_workout()
+    results = await workout_service.most_liked_workout(workouts)
+
+    return results
+
+
 
 @router.get("/{id}")
 async def get_workout(
@@ -86,6 +101,6 @@ async def get_workout(
     workout_service: WorkoutService = Depends(workout_service),
     user: User = Depends(current_user)
 ):
-    workout = await workout_service.find_one_by_id(id)
-    return workout
+    workouts= await workout_service.find_one_by_id(id)
+    return workouts
     

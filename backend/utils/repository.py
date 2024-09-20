@@ -1,8 +1,8 @@
 from abc import ABC,abstractmethod
 from databse import async_session_maker
-from sqlalchemy import insert,select,delete,update
+from sqlalchemy import insert,select,delete,update,func,column,join
 from sqlalchemy.orm import selectinload,load_only
-
+from models.models import Workout
 
 class AbstractRepository(ABC):
 
@@ -33,6 +33,11 @@ class AbstractRepository(ABC):
     @abstractmethod
     async def relationship_base_find():
         raise NotImplementedError
+
+    @abstractmethod
+    async def find_count():
+        raise NotImplementedError
+    
 
 
 
@@ -128,3 +133,22 @@ class SQLAlchemyRepository(AbstractRepository):
             result_orm = res.scalars().all()
 
             return result_orm
+
+
+    async def find_count(self,group,lim):
+        async with async_session_maker() as session:  
+            query = (
+                select(
+                    column(group),
+                    func.count()
+                )
+                .select_from(self.model)
+                .group_by(group)
+            )
+
+            res = await session.execute(query)
+            return res.all()
+
+
+
+

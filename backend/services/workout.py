@@ -51,11 +51,23 @@ class WorkoutService:
         result = [WorkoutInfoRelationship.model_validate(row,from_attributes=True) for row in users_all]
 
         count = 0
+        print(result[0])
         for i in result[0]:
             if i[0] == 'user_liked':
-                for j in i[1:]:
+                print(i)
+                for j in i[1]:
                     count+=1
 
         return count
 
+    async def most_liked_workout(self,workouts: dict) -> list:
 
+        results=[]
+
+        for i in workouts:
+            workout = await self.find_one_by_id(i)
+            workout_dict = workout[0].model_dump()
+            workout_dict['count_likes'] = workouts[i]
+            results.append(workout_dict)
+        
+        return results

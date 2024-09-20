@@ -128,3 +128,6 @@ class WorkoutInfoRelationship(WorkoutSchema):
     class Config:
         from_attributes = True
 
+class WorkoutMostLiked(BaseModel):
+    id: int
+    count_likes: int
