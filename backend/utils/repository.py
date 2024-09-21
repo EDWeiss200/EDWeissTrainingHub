@@ -1,6 +1,6 @@
 from abc import ABC,abstractmethod
 from databse import async_session_maker
-from sqlalchemy import insert,select,delete,update,func,column,join
+from sqlalchemy import insert,select,delete,update,func,column,join,desc
 from sqlalchemy.orm import selectinload,load_only
 from models.models import Workout
 
@@ -36,6 +36,10 @@ class AbstractRepository(ABC):
 
     @abstractmethod
     async def find_count():
+        raise NotImplementedError
+
+    @abstractmethod
+    async def find_and_sort():
         raise NotImplementedError
     
 
@@ -149,6 +153,28 @@ class SQLAlchemyRepository(AbstractRepository):
             res = await session.execute(query)
             return res.all()
 
+    async def find_and_sort(self,collumn,lim = 5,sort_filter = False):
+        async with async_session_maker() as session:  
+            query = select(self.model)
+            if not sort_filter:
+                query = (query.order_by(collumn).limit(lim))
+            if sort_filter:
+                query = (query.order_by(desc(collumn)).limit(lim))
+            res = await session.execute(query)
+            return res.scalars().all()
+
+    async def find_row_number_in_sort(self,column):
+        async with async_session_maker() as session:  
+            query = (
+                select(
+                    func.row_number().over(
+                        order_by=desc(column)
+                    ),
+                    self.model.id
+                )   
+            )
+            res = await session.execute(query)
+            return res.all()
 
 
 

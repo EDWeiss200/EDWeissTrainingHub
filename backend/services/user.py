@@ -1,6 +1,6 @@
 
 from utils.repository import AbstractRepository
-from schemas.schemas import UserInfo,UserInfoRelationship,WorkoutLikedSchema
+from schemas.schemas import UserInfo,UserInfoRelationship,WorkoutLikedSchema,UserCountWorkoutSchema
 from tasks.tasks import send_email_up_gymstatus,send_email_user_info
 from fastapi import BackgroundTasks, HTTPException
 from random import randint
@@ -190,4 +190,28 @@ class UserSercvice:
         for i in result[0]:
             if i[0] == 'workout_liked':
                 return i[1]
+
+    async def find_liders_by_count_workout(self):
+
+        lim = 5
+        sort_filter = True
+        collumn = 'count_workout'
+
+        users = await self.user_repo.find_and_sort(collumn,lim,sort_filter)
+        result = [UserCountWorkoutSchema.model_validate(row,from_attributes=True) for row in users]
+        return result
+
+    async def find_number_in_liders_cw(self,user_id):
+
+
+        collumn = self.user_repo.model.count_workout
+
+        liders = await self.user_repo.find_row_number_in_sort(collumn)
+        for i in liders:
+            if i[1] == user_id:
+                return i[0]
+        
+        raise HTTPException(status_code='404',detail="NOT FOUND")
+
+        
 

@@ -62,6 +62,21 @@ async def like_workout(
         raise HTTPException(status_code=404, detail="NOT FOUND WORKOUT")
 
 
+@router.get('/liders_by_count_workout')
+async def liders_by_count_workout(
+    user: User = Depends(current_user),
+    user_service: UserSercvice = Depends(user_service)
+):
+    users = await user_service.find_liders_by_count_workout()
+    return users
+
+@router.get('/number_in_liders_cw')
+async def number_in_liders_cw(
+    user: User = Depends(current_user),
+    user_service: UserSercvice = Depends(user_service)
+):
+    num = await user_service.find_number_in_liders_cw(user.id)
+    return num
 
 
 

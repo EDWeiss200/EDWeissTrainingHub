@@ -67,6 +67,12 @@ class UserLikeSchema(BaseModel):
     id:int
     username: str
 
+class UserCountWorkoutSchema(BaseModel):
+    id:int
+    username: str
+    count_workout: int
+
+
 
 class ExerciseSchema(BaseModel):
     id : int
