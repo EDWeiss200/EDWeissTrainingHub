@@ -3,17 +3,13 @@ import { Button, Checkbox, Form, Input } from 'antd';
 import { useState } from 'react';
 import axios from 'axios';
 import '../index.css'
+import { redirect } from "react-router-dom"
+import { useNavigate } from 'react-router-dom';
 
 
 
 
-
-
-
-const AuthForm = () => {
-
-
-
+const Auth = () => {
 
 
   
@@ -26,6 +22,14 @@ const AuthForm = () => {
   };
 
 
+  const navigate = useNavigate();
+
+  const redirect_home = () => {
+    navigate('/')
+  }
+
+  
+
   const [authstatus, setAuthstatus] = useState(false)
   const [AuthRequest, setAuthRequest] = useState(0)
   
@@ -33,19 +37,22 @@ const AuthForm = () => {
     const params = new URLSearchParams();
     params.append('username', email_user);
     params.append('password', password_user);
+    
     axios.post(
       'http://127.0.0.1:8000/auth/jwt/login', 
-      params
+      params,
+      { withCredentials: true }
       ).then(
         r =>  {
-          setAuthRequest(r.status)
+          if (r.status == 204){
+            return(redirect_home())
+          }
         }
-    )
-    if (AuthRequest == 204){
-      setAuthstatus(true)
-      console.log(authstatus)
-    }
-    console.log(authstatus)
+      ).catch((error) => {
+          alert('Неправильное имя пользователя или пароль')
+        }
+      )
+    
     
   
   }
@@ -130,4 +137,4 @@ const AuthForm = () => {
 
   )
 };
-export default AuthForm;
+export default Auth;

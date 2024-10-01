@@ -15,7 +15,7 @@ from pwdlib.hashers.argon2 import Argon2Hasher
 
 
 
-cookie_transport = CookieTransport(cookie_name="gym_cookie",cookie_max_age=7200)
+cookie_transport = CookieTransport(cookie_name="gym_cookie",cookie_max_age=7200,cookie_secure=True,cookie_samesite='None')
 
 
 
