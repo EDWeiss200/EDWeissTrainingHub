@@ -3,9 +3,11 @@ pydantic
 sqlalchemy
 fastapi-users
 fastapi-users-db-sqlalchemy
+fasta
 python-dotenv
 asyncpg
 alembic
 psycopg2-binary
+fastapi-cache2
 redis
 uvicorn
