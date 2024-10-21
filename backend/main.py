@@ -83,8 +83,8 @@ app.include_router(user_router)
 app.include_router(workout_router)
 app.include_router(exercise_router)
 
-if __name__ == "main":
-    uvicorn.run(app)
+#if __name__ == "main":
+#    uvicorn.run(app)
 
 
 
