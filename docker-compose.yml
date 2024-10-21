@@ -14,7 +14,7 @@ services:
       - backend
       - frontend
       - db
-    network:
+    networks:
       - dev
 
   backend:
@@ -28,7 +28,7 @@ services:
       - DATABASE_URL=postgresql://postgres:12345@db:5432/edweissth
     depends_on:
       - db
-    network:
+    networks:
       - dev
   db:
     image: postgres:15-alpine
@@ -41,14 +41,14 @@ services:
       - POSTGRES_PASSWORD= 12345
       - POSTGRES_DB= edweissth
     
-    network:
+    networks:
       - dev
     
   
   frontend:
     build:
       context: ./frontend
-    network:
+    networks:
       - dev
 
 volumes:
