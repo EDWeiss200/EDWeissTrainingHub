@@ -1,10 +1,10 @@
-fastapi[standard]
+fastapi[standart]
 pydantic
 sqlalchemy
+fastapi-users
+fastapi-users-db-sqlalchemy
 python-dotenv
-uvicorn
 asyncpg
-fastapi-cache2
 alembic
 psycopg2-binary
 redis
