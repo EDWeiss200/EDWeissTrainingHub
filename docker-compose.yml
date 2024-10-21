@@ -40,8 +40,7 @@ services:
       - POSTGRES_USER = postgres
       - POSTGRES_PASSWORD= 12345
       - POSTGRES_DB= edweissth
-    volumes:
-      postgres_data:
+    
     network:
       - dev
     
@@ -52,3 +51,5 @@ services:
     network:
       - dev
 
+volumes:
+      postgres_data:
