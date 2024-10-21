@@ -1,6 +1,8 @@
-fastapi[standard]
+fastapi
 pydantic
 sqlalchemy
 fastapi-users
 fastapi-users-db-sqlalchemy
 python-dotenv
+asyncpg
+psycopg2-binary
