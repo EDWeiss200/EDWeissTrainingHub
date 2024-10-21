@@ -8,3 +8,4 @@ asyncpg
 alembic
 psycopg2-binary
 redis
+uvicorn
