@@ -18,7 +18,7 @@ services:
       - dev
 
   backend:
-    build: /backend
+    build: ./backend
     command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; cd backend && alembic upgrade head && uvicorn main:app --host 0.0.0.0'
     volumes:
       - .:/backend
