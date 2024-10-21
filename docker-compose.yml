@@ -1,19 +1,35 @@
-# docker-compose.yml
-
 version: '3.8'
+network:
+  dev:
+
 
 services:
-  web:
-    build: .
-    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; uvicorn backend.main:app --host 0.0.0.0'
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - './nginx.conf:/etc/nginx/nginx.conf'
+    depends_on:
+      - backend
+      - frontend
+      - db
+    network:
+      - dev
+
+  backend:
+    build: /backend
+    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; cd backend && alembic upgrade head && uvicorn main:app --host 0.0.0.0'
     volumes:
       - .:/backend
     ports:
       - 8008:8000
     environment:
-      - DATABASE_URL=postgresql://postgres:fastapi_traefik@db:5432/fastapi_traefik
+      - DATABASE_URL=postgresql://postgres:12345@db:5432/edweissth
     depends_on:
       - db
+    network:
+      - dev
   db:
     image: postgres:15-alpine
     volumes:
@@ -21,9 +37,18 @@ services:
     expose:
       - 5432
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=
-      - POSTGRES_DB=fastapi_traefik
+      - POSTGRES_USER = postgres
+      - POSTGRES_PASSWORD= 12345
+      - POSTGRES_DB= edweissth
+    volumes:
+      postgres_data:
+    network:
+      - dev
+    
+  
+  frontend:
+    build:
+      context: ./frontend
+    network:
+      - dev
 
-volumes:
-  postgres_data:

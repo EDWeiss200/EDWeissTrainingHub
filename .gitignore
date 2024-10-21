@@ -1,4 +1,0 @@
-backend/.env
-backend/migrations
-frontend/node_modules
-docker-compose
