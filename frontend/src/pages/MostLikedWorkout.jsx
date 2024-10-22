@@ -21,7 +21,7 @@ const MostLikedWorkout = () => {
     
     function GetMostLikedWorkout() {
         axios.get(
-            'http://127.0.0.1:8000/workouts/most_liked',
+            'http://127.0.0.1:80/api/workouts/most_liked',
             { withCredentials: true }
             ).then(
               r =>  {
