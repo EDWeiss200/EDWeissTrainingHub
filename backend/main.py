@@ -17,7 +17,7 @@ from redis import asyncio as aioredis
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
-
+from fastapi_swagger2 import FastAPISwagger2
 
 
 
@@ -30,9 +30,9 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 
 app = FastAPI(
     title="EDWeissTrainingHub",
-    lifespan=lifespan
+    lifespan=lifespan,
 )
-
+FastAPISwagger2(app)
 
 
 origins = [

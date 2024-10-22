@@ -11,3 +11,4 @@ psycopg2-binary
 fastapi-cache2
 redis
 uvicorn
+fastapi_swagger2
