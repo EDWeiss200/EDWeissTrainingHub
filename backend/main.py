@@ -30,7 +30,7 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 
 app = FastAPI(
     title="EDWeissTrainingHub",
-    swagger_ui_init_oauth=3,
+    openapi_version = '3.1.0',
     lifespan=lifespan,
 )
 
