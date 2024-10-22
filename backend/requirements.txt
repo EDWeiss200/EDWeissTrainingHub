@@ -12,3 +12,4 @@ fastapi-cache2
 redis
 uvicorn
 fastapi_swagger2
+swagger_to
